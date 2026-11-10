@@ -497,7 +497,7 @@ public class AiHttpClient {
                     log.info("渠道模型拉取响应: apiFormat={}, url={}, status={}, body={}", normalizedFormat, uri,
                             response.statusCode(), abbreviateModelResponse(safeResponseBody));
                     if (response.statusCode() < 200 || response.statusCode() >= 300) {
-                        throw new BusinessException(ErrorCode.THIRD_PARTY_CALL_ERROR, SystemMessage.of("business.failedToFetchModelsHTTP", response.statusCode(), readModelErrorMessage(safeResponseBody)));
+                        throw new BusinessException(ErrorCode.THIRD_PARTY_CALL_ERROR, classifyModelFetchError(response.statusCode(), readModelErrorMessage(safeResponseBody)));
                     }
                     List<String> models;
                     try {
@@ -519,6 +519,30 @@ public class AiHttpClient {
                 }
             });
         });
+    }
+
+    /**
+     * 将拉取模型时的上游HTTP状态与报文翻译为可读错误。
+     *
+     * @param statusCode int 上游HTTP状态码
+     * @param upstreamMessage String 上游错误消息（已脱敏）
+     * @return SystemMessage 面向用户的错误消息
+     */
+    private SystemMessage classifyModelFetchError(int statusCode, String upstreamMessage) {
+        String normalized = upstreamMessage == null ? "" : upstreamMessage.toLowerCase(Locale.ROOT);
+        boolean authFailure = statusCode == 401 || statusCode == 403
+                || normalized.contains("invalid_api_key") || normalized.contains("unauthorized")
+                || normalized.contains("invalid authorization") || normalized.contains("authentication");
+        if (authFailure) {
+            return SystemMessage.of("business.modelFetchAuthFailed", upstreamMessage);
+        }
+        boolean quotaFailure = statusCode == 429
+                || normalized.contains("insufficient_quota") || normalized.contains("quota")
+                || normalized.contains("arrears") || normalized.contains("欠费") || normalized.contains("余额不足");
+        if (quotaFailure) {
+            return SystemMessage.of("business.modelFetchQuotaExhausted", upstreamMessage);
+        }
+        return SystemMessage.of("business.failedToFetchModelsHTTP", statusCode, upstreamMessage);
     }
 
     /**

@@ -21,11 +21,13 @@ type OAuth2LoginOptionsProps = {
 const PROVIDER_ICON_PATHS: Record<string, string> = {
     google: "/icons/google.svg",
     linuxDo: "/icons/linuxdo.svg",
+    volc: "/icons/volcengine.svg",
 };
 
 const PROVIDER_DISPLAY_ORDER: Record<string, number> = {
     google: 0,
     linuxDo: 1,
+    volc: 2,
 };
 
 export function OAuth2LoginOptions({ redirectPath, invitationCode }: OAuth2LoginOptionsProps) {

@@ -598,6 +598,27 @@ public class NovanovaProperties {
         /** Google认证配置 */
         private Google google = new Google();
 
+        /** 火山引擎SSO认证配置 */
+        private Volc volc = new Volc();
+
+        /**
+         * 获取火山引擎SSO认证配置
+         *
+         * @return Volc 火山引擎SSO认证配置
+         */
+        public Volc getVolc() {
+            return volc;
+        }
+
+        /**
+         * 设置火山引擎SSO认证配置
+         *
+         * @param volc Volc 火山引擎SSO认证配置
+         */
+        public void setVolc(Volc volc) {
+            this.volc = volc;
+        }
+
         /**
          * 获取linux.do认证配置
          *
@@ -811,6 +832,78 @@ public class NovanovaProperties {
              */
             public void setRedirectUri(String redirectUri) {
                 this.redirectUri = redirectUri;
+            }
+        }
+
+        /**
+         * 火山引擎SSO认证配置（OAuth2.0 授权码模式；token/userinfo 端点由火山按企业下发）
+         */
+        public static class Volc {
+
+            /** 是否启用 */
+            private boolean enabled;
+
+            /** 客户端ID */
+            private String clientId = "";
+
+            /** 客户端密钥 */
+            private String clientSecret = "";
+
+            /** OAuth2回调地址 */
+            private String redirectUri = "";
+
+            /** 令牌端点 */
+            private String tokenUri = "";
+
+            /** 用户信息端点 */
+            private String userInfoUri = "";
+
+            public boolean isEnabled() {
+                return enabled;
+            }
+
+            public void setEnabled(boolean enabled) {
+                this.enabled = enabled;
+            }
+
+            public String getClientId() {
+                return clientId;
+            }
+
+            public void setClientId(String clientId) {
+                this.clientId = clientId;
+            }
+
+            public String getClientSecret() {
+                return clientSecret;
+            }
+
+            public void setClientSecret(String clientSecret) {
+                this.clientSecret = clientSecret;
+            }
+
+            public String getRedirectUri() {
+                return redirectUri;
+            }
+
+            public void setRedirectUri(String redirectUri) {
+                this.redirectUri = redirectUri;
+            }
+
+            public String getTokenUri() {
+                return tokenUri;
+            }
+
+            public void setTokenUri(String tokenUri) {
+                this.tokenUri = tokenUri;
+            }
+
+            public String getUserInfoUri() {
+                return userInfoUri;
+            }
+
+            public void setUserInfoUri(String userInfoUri) {
+                this.userInfoUri = userInfoUri;
             }
         }
     }
